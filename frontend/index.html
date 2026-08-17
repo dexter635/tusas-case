@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TUSAŞ Belge Analiz Sistemi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #003d82;
+            --primary-dark: #002a5c;
+            --accent: #e30613;
+            --bg: #f4f6f9;
+            --surface: #ffffff;
+            --text: #1a1a2e;
+            --text-secondary: #6b7280;
+            --border: #e5e7eb;
+            --success: #16a34a;
+            --warning: #d97706;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 0 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            text-decoration: none;
+        }
+
+        .logo-section img {
+            height: 45px;
+            width: auto;
+        }
+
+        .logo-text h1 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin: 0;
+            color: white;
+        }
+
+        .logo-text p {
+            font-size: 0.7rem;
+            opacity: 0.85;
+            margin: 0;
+            color: white;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 500;
+            opacity: 0.9;
+            transition: opacity 0.2s;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-links a:hover {
+            opacity: 1;
+            border-bottom-color: var(--accent);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 3rem;
+            border-radius: 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="40" fill="none" stroke="white" stroke-opacity="0.05" stroke-width="0.5"/></svg>');
+            background-size: 100px 100px;
+            opacity: 0.3;
+        }
+
+        .hero h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero p {
+            opacity: 0.95;
+            font-size: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--primary);
+        }
+
+        .card h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .upload-zone {
+            border: 2px dashed var(--border);
+            border-radius: 6px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: var(--bg);
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: #f0f4ff;
+        }
+
+        .upload-zone.dragover {
+            border-color: var(--accent);
+            background: #fff5f5;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-accent {
+            background: var(--accent);
+        }
+
+        .btn-accent:hover {
+            background: #b9050f;
+        }
+
+        .btn-danger {
+            background: var(--accent);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.8rem;
+        }
+
+        .btn-danger:hover {
+            background: #b9050f;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .input-group input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 0.9rem;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        .answer-box {
+            background: #f0f7ff;
+            border-left: 4px solid var(--primary);
+            padding: 1.25rem;
+            border-radius: 6px;
+            margin-top: 1rem;
+            line-height: 1.8;
+            white-space: pre-wrap;
+        }
+
+        .source-chip {
+            display: inline-block;
+            background: var(--primary);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin: 0.25rem 0.25rem 0.25rem 0;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .metric-card {
+            background: var(--surface);
+            padding: 1.25rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            text-align: center;
+            border-top: 3px solid var(--primary);
+        }
+
+        .metric-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .metric-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .footer {
+            background: var(--primary-dark);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 3rem;
+        }
+
+        .footer p {
+            opacity: 0.8;
+            font-size: 0.85rem;
+        }
+
+        .document-item {
+            padding: 0.75rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .document-item:last-child {
+            border-bottom: none;
+        }
+
+        .document-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .document-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            word-break: break-word;
+        }
+
+        .document-meta {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .document-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-shrink: 0;
+        }
+
+        .checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            cursor: pointer;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .badge-info {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .duration-badge {
+            background: #fef3c7;
+            color: #92400e;
+            padding: 0.25rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+
+        .selection-info {
+            background: #f0f9ff;
+            border-left: 4px solid var(--primary);
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .features-section {
+            background: var(--surface);
+            border-radius: 8px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            border: 1px solid var(--border);
+            border-top: 3px solid var(--primary);
+        }
+
+        .features-section h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: var(--bg);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid var(--border);
+            transition: all 0.25s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            border-color: var(--primary);
+        }
+
+        .feature-card h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 0.6rem;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .feature-card p {
+            font-size: 0.92rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+        }
+
+        .feature-card ul {
+            margin: 0.5rem 0 0 0;
+            padding-left: 1.2rem;
+        }
+
+        .feature-card li {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.25rem;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-content {
+                flex-direction: column;
+                gap: 0.5rem;
+                height: auto;
+                padding: 1rem 0;
+            }
+            .nav-links {
+                gap: 1rem;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .hero h2 {
+                font-size: 1.4rem;
+            }
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+            .document-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .document-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="/" class="logo-section">
+                <img src="/static/assets/tusas-logo.svg" alt="TUSAŞ Logo">
+                <div class="logo-text">
+                    <h1>TUSAŞ Belge Analiz Sistemi</h1>
+                    <p>Yapay Zeka Destekli Savunma Sanayii Platformu</p>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#">ANASAYFA</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="hero">
+            <h2>Yapay Zeka Destekli Belge Analizi</h2>
+            <p>Güvenlik ve savunma sanayii standartlarında, GPU destekli RAG teknolojisi ile belgelerinizden hızlı ve doğru yanıtlar alın.</p>
+        </div>
+
+        <div class="features-section">
+            <h2>🚀 Sistem Özellikleri</h2>
+            <p style="margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.95rem;">
+                Bu sistem, yüksek doğruluk, düşük hallüsinasyon oranı ve kullanıcı odaklı tasarımıyla öne çıkan,
+                yerel LLM ve RAG tabanlı kurumsal düzeyde bir belge analiz platformudur. Aşağıda sistemin tüm teknik
+                ve işlevsel özellikleri detaylı olarak açıklanmıştır:
+            </p>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h4>📄 Çoklu Belge Formatı Desteği</h4>
+                    <p>
+                        Sistem; dijital PDF, taranmış görsel PDF, metin tabanlı dosyalar ve görsel belgeleri tek bir arayüzde işler.
+                        Yüklenen dosyalar otomatik olarak tanınır, uygun işleme hattı seçilir ve metin çıkarımı gerçekleştirilir.
+                    </p>
+                    <ul>
+                        <li><strong>PDF (dijital):</strong> PyMuPDF ile katmanlı metin çıkarımı</li>
+                        <li><strong>PDF (taranmış):</strong> Otomatik OCR devreye girer</li>
+                        <li><strong>Görseller:</strong> JPG, PNG, BMP, TIFF — Tesseract OCR ile TR+EN</li>
+                        <li><strong>Metin:</strong> TXT, MD, CSV — UTF-8 uyumlu okuma</li>
+                        <li><strong>Çoklu yükleme:</strong> Aynı anda birden fazla dosya yükleme</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🧠 Gelişmiş Metin Çıkarımı ve OCR</h4>
+                    <p>
+                        Belgelerden maksimum metin kalitesi çıkarmak için hibrit bir çıkarım stratejisi kullanılır.
+                        Önce düz metin denemesi yapılır, başarısız olunca OCR pipeline'ı devreye girer.
+                    </p>
+                    <ul>
+                        <li><strong>Düz metin önceliği:</strong> Hızlı işleme, kaynak korunumu</li>
+                        <li><strong>Tesseract 5.x:</strong> Türkçe + İngilizce dil paketi ile</li>
+                        <li><strong>pdf2image entegrasyonu:</strong> PDF sayfaları yüksek DPI'ye çevrilir</li>
+                        <li><strong>Pillow ön işleme:</strong> Görsel iyileştirme, kontrast ayarı</li>
+                        <li><strong>Hata toleransı:</strong> Boş sayfalar, şifreli PDF'ler için güvenli fallback</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>✂️ Akıllı Chunking ve Bağlam Yönetimi</h4>
+                    <p>
+                        Metin, anlamlı bütünlükleri koruyacak şekilde parçalara ayrılır. Çakışan chunk'lar sayesinde
+                        bilgi kaybı önlenir ve model daha kapsamlı bağlam alır.
+                    </p>
+                    <ul>
+                        <li><strong>Karakter bazlı bölme:</strong> 600 karakter ideal parça boyu</li>
+                        <li><strong>Overlap:</strong> %16 oranında chunk çakışması (100 karakter)</li>
+                        <li><strong>Parçe sayısı optimizasyonu:</strong> Uzun belgelerde bile tutarlı context</li>
+                        <li><strong>Metadata korunumu:</strong> Her chunk'a kaynak dosya bilgisi eklenir</li>
+                        <li><strong>Dinamik ayarlar:</strong> .env üzerinden chunk_size ve overlap değiştirilebilir</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔍 Hibrit Arama ve Reranking</h4>
+                    <p>
+                        Sadece vektör benzerliği değil; anahtar kelime eşleşmesi, BM25 benzeri scoring ve
+                        cross-encoder reranking birleşimiyle en alakalı parçalar en üste çıkarılır.
+                    </p>
+                    <ul>
+                        <li><strong>Vektör arama:</strong> ChromaDB HNSW cosine similarity</li>
+                        <li><strong>BM25-benzeri filtreleme:</strong> Kelime frekansı skoru</li>
+                        <li><strong>Cross-encoder reranker:</strong> ms-marco-MiniLM-L-6-v2 ile yeniden sıralama</li>
+                        <li><strong>Top-K seçimi:</strong> 10 parça seçimi, bağlamda çakışma minimize</li>
+                        <li><strong>Kaynak takibi:</strong> Her parçanın dosya ID'si ve dosya adı korunur</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🛡️ Hallucination Önleme</h4>
+                    <p>
+                        Sistemin uydurma bilgi üretmemesi için çok katmanlı koruma mekanizmaları kurulmuştur.
+                        LLM'e sadece gerçek belgelerden gelen bağlam verilir ve prompt ile kısıtlanır.
+                    </p>
+                    <ul>
+                        <li><strong>Sıfır sıcaklık (temperature=0.0):</strong> Deterministik çıktı</li>
+                        <li><strong>2048 token bağlam penceresi:</strong> Yeterli context, kısa cevaplar</li>
+                        <li><strong>512 token üretim sınırı:</strong> Gereksiz uzatmalar engellenir</li>
+                        <li><strong>Prompt engineering:</strong> "Yalnızca bağlam" kuralı, kaynak zorunluluğu</li>
+                        <li><strong>Bilgi yoksa net mesaj:</strong> "Bu bilgi verilen belgelerde bulunmuyor."</li>
+                        <li><strong>Kaynak numaralandırma:</strong> [1], [2] ile şeffaf atıf</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🌐 Kullanıcı Arayüzü</h4>
+                    <p>
+                        Teknolojik bir derinlik sunan, hızlı ve duyarlı bir web arayüzü ile kullanıcı deneyimi
+                        optimize edilmiştir. Minimal tasarım, kolay navigasyon ve anlık geri bildirim sunar.
+                    </p>
+                    <ul>
+                        <li><strong>Responsive tasarım:</strong> Mobil, tablet ve masaüstü uyumlu</li>
+                        <li><strong>Sürükle-bırak yükleme:</strong> Dosya yükleme alanı</li>
+                        <li><strong>Belge listesi:</strong> Yüklenen dosyalar, chunk sayısı, tarih</li>
+                        <li><strong>Seçmeli arama:</strong> Sadece istediğiniz belgelerde arama</li>
+                        <li><strong>Kaynak gösterimi:</strong> Cevabın hangi dosyadan geldiği</li>
+                        <li><strong>Metrikler:</strong> Yanıt süresi, belge sayısı, parça sayısı</li>
+                        <li><strong>Marka uyumu:</strong> TUSAŞ renk paleti ve logosu</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>⚙️ Donanım ve Performans Optimizasyonu</h4>
+                    <p>
+                        Sistem, düşük donanımlı ortamlar bile olsa çalışabilecek şekilde optimize edilmiştir.
+                        CPU ve GPU kullanımı dikkatle yönetilir, bellek tüketimi minimize edilir.
+                    </p>
+                    <ul>
+                        <li><strong>CPU-only mod:</strong> GPU olmadan da çalışma</li>
+                        <li><strong>CUDA 11.8 desteği:</strong> NVIDIA GPU ile hızlandırma</li>
+                        <li><strong>Ollama optimizasyonu:</strong> Çoklu thread ve paralel yapılandırma</li>
+                        <li><strong>Bellek yönetimi:</strong> Embedding modeli CPU'da, LLM GPU'da</li>
+                        <li><strong>Başlangıç temizliği:</strong> Sunucu restartlarında otomatik cache temizliği</li>
+                        <li><strong>Hafif modeller:</strong> 3B parametre LLM, 80MB embedding</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>🔒 Güvenlik ve Gizlilik</h4>
+                    <p>
+                        Tüm işlemler yerel olarak gerçekleştirilir. Belgeleriniz harici sunuculara gönderilmez,
+                        verileriniz tamamen sizin kontrolünüzde kalır.
+                    </p>
+                    <ul>
+                        <li><strong>Yerel işleme:</strong> Hiçbir veri dışarı çıkmaz</li>
+                        <li><strong>Kalıcı depolama opsiyonu:</strong> ChromaDB lokal dosya sisteminde</li>
+                        <li><strong>Geçici dosya yönetimi:</strong> Yükleme sırasında temp dosyalar otomatik silinir</li>
+                        <li><strong>Hash kontrolü:</strong> Aynı dosya tekrar yüklenmez, disk tasarrufu</li>
+                        <li><strong>CORS yapılandırması:</strong> Sadece güvenilir origin'lere izin</li>
+                        <li><strong>Hata yönetimi:</strong> Beklenmeyen hatalarda sistem çökmez, kullanıcı bilgilendirilir</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <h4>📊 RAG Pipeline ve Mimarî Detayları</h4>
+                    <p>
+                        Retrieval-Augmented Generation (RAG) mimarisi; belgelerin vektörleştirilmesi,
+                        anlamsal arama, reranking ve LLM üretimi adımlarından oluşan modüler bir pipeline'dır.
+                    </p>
+                    <ul>
+                        <li><strong>Modüler tasarım:</strong> Retriever, Compressor, LLM ayrı modüller</li>
+                        <li><strong>Hibrit retrieval:</strong> Vector + BM25-benzeri keyword search</li>
+                        <li><strong>Cross-encoder reranking:</strong> İlk adama göre daha yüksek doğruluk</li>
+                        <li><strong>Context compression:</strong> En alakalı parçaları öne çıkarma</li>
+                        <li><strong>Streaming yanıt:</strong> Kullanıcıya anlık metin akışı</li>
+                        <li><strong>JSON tabanlı iletişim:</strong> Backend-frontend API standardı</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="metrics">
+            <div class="metric-card">
+                <div class="metric-value" id="metric-docs">0</div>
+                <div class="metric-label">Yüklenen Belge</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="metric-chunks">0</div>
+                <div class="metric-label">Toplam Parça</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="metric-status">Aktif</div>
+                <div class="metric-label">Sistem Durumu</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value" id="metric-duration">-</div>
+                <div class="metric-label">Son Yanıt Süresi</div>
+            </div>
+        </div>
+
+        <div class="card-grid">
+            <div class="card">
+                <h3>📄 Belge Yükle</h3>
+                <div class="upload-zone" id="upload-zone">
+                    <p>PDF, TXT, MD veya resim dosyanızı sürükleyin veya tıklayın</p>
+                    <input type="file" id="file-input" accept=".pdf,.txt,.md,.csv,.jpg,.jpeg,.png,.bmp,.tiff" multiple style="display:none">
+                </div>
+                <div id="upload-status"></div>
+            </div>
+
+            <div class="card">
+                <h3>💬 Soru-Cevap</h3>
+                <div class="input-group">
+                    <input type="text" id="question-input" placeholder="Belgeler hakkında soru sorun...">
+                    <button class="btn" onclick="askQuestion()">Sor</button>
+                </div>
+                <div class="selection-info" id="selection-info">
+                    Tüm belgelerde arama yapılıyor.
+                </div>
+                <div id="answer-container"></div>
+            </div>
+        </div>
+
+        <div class="card" id="documents-card">
+            <h3>📚 Yüklenen Belgeler</h3>
+            <div style="margin-bottom: 1rem;">
+                <button class="btn btn-danger" onclick="clearAllDocuments()">Tümünü Sil</button>
+                <span style="margin-left: 1rem; font-size: 0.85rem; color: var(--text-secondary);">
+                    Arama için sağdaki kutucukları seçin
+                </span>
+            </div>
+            <div id="documents-list">Henüz belge yüklenmedi.</div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Türk Havacılık ve Uzay Sanayii A.Ş. | TUSAŞ Belge Analiz Sistemi | Savunma Sanayii Standartlarında</p>
+    </div>
+
+    <script>
+        const API_BASE = window.location.origin;
+        let documents = [];
+        let selectedDocIds = new Set();
+
+        async function loadDocuments() {
+            try {
+                const res = await fetch(`${API_BASE}/api/documents`);
+                const data = await res.json();
+                documents = data.documents || [];
+                updateMetrics();
+                renderDocuments();
+                updateSelectionInfo();
+            } catch (e) {
+                console.error('Belgeler yüklenemedi:', e);
+            }
+        }
+
+        function updateMetrics() {
+            document.getElementById('metric-docs').textContent = documents.length;
+            const totalChunks = documents.reduce((sum, doc) => sum + doc.chunk_count, 0);
+            document.getElementById('metric-chunks').textContent = totalChunks;
+        }
+
+        function updateSelectionInfo() {
+            const info = document.getElementById('selection-info');
+            if (selectedDocIds.size === 0) {
+                info.textContent = 'Tüm belgelerde arama yapılıyor.';
+            } else {
+                const selected = documents.filter(d => selectedDocIds.has(d.file_id));
+                info.textContent = `Seçili belgelerde arama yapılıyor: ${selected.map(d => d.filename).join(', ')}`;
+            }
+        }
+
+        function renderDocuments() {
+            const container = document.getElementById('documents-list');
+            if (!documents.length) {
+                container.innerHTML = '<p style="color: var(--text-secondary);">Henüz belge yüklenmedi.</p>';
+                return;
+            }
+            container.innerHTML = documents.map(doc => {
+                const isSelected = selectedDocIds.has(doc.file_id);
+                const statusBadge = doc.status === 'cache_hit' 
+                    ? '<span class="badge badge-info">Cache</span>' 
+                    : '<span class="badge badge-success">Yeni</span>';
+                
+                return `
+                    <div class="document-item">
+                        <div class="document-info">
+                            <div class="document-title">
+                                <input type="checkbox" 
+                                       ${isSelected ? 'checked' : ''} 
+                                       onchange="toggleDocument('${doc.file_id}')"
+                                       title="Arama için seç">
+                                ${statusBadge} ${doc.filename}
+                            </div>
+                            <div class="document-meta">
+                                ${doc.chunk_count} parça • ${new Date(doc.created_at).toLocaleString('tr-TR')}
+                            </div>
+                        </div>
+                        <div class="document-actions">
+                            <button class="btn btn-danger" onclick="deleteDocument('${doc.file_id}')">Sil</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleDocument(fileId) {
+            if (selectedDocIds.has(fileId)) {
+                selectedDocIds.delete(fileId);
+            } else {
+                selectedDocIds.add(fileId);
+            }
+            updateSelectionInfo();
+        }
+
+        async function deleteDocument(fileId) {
+            if (!confirm('Bu belgeyi silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/documents/${fileId}`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    selectedDocIds.delete(fileId);
+                    await loadDocuments();
+                } else {
+                    alert('Silme hatası: ' + data.detail);
+                }
+            } catch (e) {
+                alert('Silme hatası: ' + e.message);
+            }
+        }
+
+        async function clearAllDocuments() {
+            if (!confirm('Tüm belgeleri silmek istediğinizden emin misiniz?')) return;
+            
+            try {
+                const res = await fetch(`${API_BASE}/api/documents`, {
+                    method: 'DELETE'
+                });
+                const data = await res.json();
+                if (res.ok) {
+                    selectedDocIds.clear();
+                    await loadDocuments();
+                } else {
+                    alert('Temizleme hatası: ' + data.detail);
+                }
+            } catch (e) {
+                alert('Temizleme hatası: ' + e.message);
+            }
+        }
+
+        const uploadZone = document.getElementById('upload-zone');
+        const fileInput = document.getElementById('file-input');
+
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', (e) => { e.preventDefault(); uploadZone.classList.add('dragover'); });
+        uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('dragover'));
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            handleFiles(e.dataTransfer.files);
+        });
+        fileInput.addEventListener('change', (e) => handleFiles(e.target.files));
+
+        async function handleFiles(files) {
+            const status = document.getElementById('upload-status');
+            for (const file of files) {
+                const formData = new FormData();
+                formData.append('file', file);
+                status.innerHTML = `<p>Yükleniyor: ${file.name}...</p>`;
+                try {
+                    const res = await fetch(`${API_BASE}/api/documents/upload`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    const data = await res.json();
+                    if (res.ok) {
+                        const statusText = data.status === 'cache_hit' ? 'Cache hit - zaten mevcut' : 'Yüklendi';
+                        status.innerHTML += `<p style="color: ${data.status === 'cache_hit' ? 'var(--warning)' : 'var(--success)'}; margin-top: 0.5rem;">
+                            ✓ ${file.name} - ${statusText} (${data.chunk_count} parça)
+                        </p>`;
+                    } else {
+                        status.innerHTML += `<p style="color: red; margin-top: 0.5rem;">✗ ${file.name}: ${data.detail}</p>`;
+                    }
+                } catch (e) {
+                    status.innerHTML += `<p style="color: red; margin-top: 0.5rem;">✗ ${file.name}: Hata</p>`;
+                }
+            }
+            await loadDocuments();
+        }
+
+        async function askQuestion() {
+            const input = document.getElementById('question-input');
+            const container = document.getElementById('answer-container');
+            const question = input.value.trim();
+            if (!question) return;
+
+            container.innerHTML = '<div class="answer-box"><div class="loading"></div> Yanıt üretiliyor...</div>';
+            
+            try {
+                const payload = {
+                    question: question,
+                    top_k: 10,
+                    selected_docs: Array.from(selectedDocIds)
+                };
+                
+                const startTime = performance.now();
+                const res = await fetch(`${API_BASE}/api/query`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                const endTime = performance.now();
+                const duration = ((endTime - startTime) / 1000).toFixed(2);
+                
+                document.getElementById('metric-duration').textContent = duration + 's';
+                
+                if (res.ok) {
+                    let html = `<div class="answer-box">${data.answer.replace(/\n/g, '<br>')}</div>`;
+                    html += `<div class="duration-badge">⏱️ ${duration} saniye</div>`;
+                    if (data.sources && data.sources.length) {
+                        html += '<div style="margin-top: 1rem;">';
+                        html += '<strong>Kaynaklar:</strong><br>';
+                        data.sources.forEach(src => {
+                            html += `<span class="source-chip">${src}</span>`;
+                        });
+                        html += '</div>';
+                    }
+                    container.innerHTML = html;
+                } else {
+                    container.innerHTML = `<div class="answer-box" style="border-left-color: var(--accent);">Hata: ${data.detail}</div>`;
+                }
+            } catch (e) {
+                container.innerHTML = `<div class="answer-box" style="border-left-color: var(--accent);">Bağlantı hatası: ${e.message}</div>`;
+            }
+        }
+
+        document.getElementById('question-input').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') askQuestion();
+        });
+
+        loadDocuments();
+    </script>
+</body>
+</html>
