@@ -8,7 +8,7 @@ AI destekli, yerel işlemli, kurumsal düzeyde bir **Retrieval-Augmented Generat
 
 ### Belge İşleme
 - **Çoklu format desteği:** PDF (dijital + taranmış), JPG, PNG, BMP, TIFF, TXT, MD, CSV
-- **Otomatik OCR:** Tesseract 5.x ile Türkçe + İngilizce dil paketi
+- **GPU-accelerated OCR:** EasyOCR (PyTorch CUDA) ile Türkçe + İngilizce; Tesseract CPU fallback
 - **Hibrit çıkarım:** Önce düz metin (PyMuPDF), başarısız olunca otomatik OCR devreye girer
 - **Çoklu yükleme:** Aynı anda birden fazla dosya yükleme
 
@@ -81,13 +81,14 @@ AI destekli, yerel işlemli, kurumsal düzeyde bir **Retrieval-Augmented Generat
 |--------|-----------|------|
 | Backend | FastAPI + Uvicorn | API sunucusu, async request handling |
 | Frontend | HTML5 + Vanilla JS + CSS3 | Responsive arayüz, sürükle-bırak |
-| OCR | Tesseract 5.x + pdf2image + Pillow | Taranmış belgelerden metin çıkarımı |
+| OCR | EasyOCR (GPU) + Tesseract (CPU fallback) | Taranmış belgelerden metin çıkarımı |
 | PDF | PyMuPDF (fitz) | Dijital PDF metin çıkarımı |
-| Embedding | SentenceTransformers (`all-MiniLM-L6-v2`) | Metin vektörleştirme |
+| Embedding | SentenceTransformers (`all-MiniLM-L6-v2`, FP16 CUDA) | Metin vektörleştirme |
 | Vektör DB | ChromaDB (HNSW, cosine) | Semantic arama |
-| Reranker | CrossEncoder (`ms-marco-MiniLM-L-6-v2`) | Relevance sıralama |
-| LLM | Ollama (`llama3.2:3b`) | Yerel metin üretimi |
+| Reranker | CrossEncoder (`ms-marco-MiniLM-L-6-v2`, CUDA) | Relevance sıralama |
+| LLM | Ollama (`llama3.2:3b`, CUDA offload) | Yerel metin üretimi |
 | Chunking | tiktoken (`cl100k_base`) | Token-aware metin bölme |
+| GPU | CUDA 11.8 + PyTorch | Tüm ML inference hızlandırma |
 | Diğer | python-dotenv, requests, torch | Konfigürasyon, HTTP, CUDA desteği |
 
 ---

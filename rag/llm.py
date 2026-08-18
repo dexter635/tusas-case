@@ -1,6 +1,6 @@
 import re
 import requests
-from core.config import OLLAMA_BASE_URL, OLLAMA_MODEL, LLM_TEMPERATURE, LLM_NUM_CTX, OLLAMA_TIMEOUT, LLM_NUM_PREDICT
+from core.config import OLLAMA_BASE_URL, OLLAMA_MODEL, LLM_TEMPERATURE, LLM_NUM_CTX, OLLAMA_TIMEOUT, LLM_NUM_PREDICT, OLLAMA_NUM_GPU
 from core.logging import logger
 
 
@@ -62,7 +62,7 @@ def generate_answer(question: str, context_chunks: list[str], source_files: list
         "model": OLLAMA_MODEL,
         "prompt": prompt,
         "stream": False,
-        "options": {"temperature": LLM_TEMPERATURE, "num_ctx": LLM_NUM_CTX, "num_predict": LLM_NUM_PREDICT},
+        "options": {"temperature": LLM_TEMPERATURE, "num_ctx": LLM_NUM_CTX, "num_predict": LLM_NUM_PREDICT, "num_gpu": OLLAMA_NUM_GPU},
     }
     try:
         resp = requests.post(f"{OLLAMA_BASE_URL}/api/generate", json=payload, timeout=OLLAMA_TIMEOUT)
@@ -85,7 +85,7 @@ def generate_answer_stream(question: str, context_chunks: list[str], source_file
         "model": OLLAMA_MODEL,
         "prompt": prompt,
         "stream": True,
-        "options": {"temperature": LLM_TEMPERATURE, "num_ctx": LLM_NUM_CTX, "num_predict": LLM_NUM_PREDICT},
+        "options": {"temperature": LLM_TEMPERATURE, "num_ctx": LLM_NUM_CTX, "num_predict": LLM_NUM_PREDICT, "num_gpu": OLLAMA_NUM_GPU},
     }
     try:
         resp = requests.post(f"{OLLAMA_BASE_URL}/api/generate", json=payload, timeout=OLLAMA_TIMEOUT, stream=True)

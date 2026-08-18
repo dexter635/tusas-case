@@ -18,7 +18,9 @@ def get_embedding_model():
         device = "cuda" if torch.cuda.is_available() else "cpu"
         logger.info(f"Embedding model yükleniyor... Cihaz: {device}")
         _embedding_model = SentenceTransformer(EMBEDDING_MODEL, device=device)
-        logger.info("Embedding model yüklendi.")
+        if device == "cuda":
+            _embedding_model = _embedding_model.half()
+        logger.info(f"Embedding model yüklendi. Device: {device}, dtype: {_embedding_model[0].auto_model.dtype}")
     return _embedding_model
 
 

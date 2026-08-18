@@ -3,14 +3,14 @@ import uuid
 import os
 import shutil
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Optional
 
 import fitz
-import pytesseract
 import tiktoken
 from pdf2image import convert_from_path
 from PIL import Image
-from core.config import DATA_DIR
+import torch
+from core.config import DATA_DIR, OCR_BACKEND, OCR_GPU, OCR_LANGS
 from core.logging import logger
 
 
@@ -28,11 +28,31 @@ def _resolve_tesseract_cmd():
 
 
 _tesseract_cmd = _resolve_tesseract_cmd()
+_easyocr_reader = None
+
+
+def _get_easyocr_reader():
+    global _easyocr_reader
+    if _easyocr_reader is not None:
+        return _easyocr_reader
+    try:
+        import easyocr
+        use_gpu = OCR_GPU and torch.cuda.is_available()
+        langs = [lang.strip() for lang in OCR_LANGS.split(",") if lang.strip()]
+        _easyocr_reader = easyocr.Reader(langs, gpu=use_gpu)
+        logger.info(f"EasyOCR başlatıldı: diller={langs}, gpu={use_gpu}")
+        return _easyocr_reader
+    except Exception as e:
+        logger.warning(f"EasyOCR başlatılamadı: {e}")
+        return None
+
+
 if _tesseract_cmd:
+    import pytesseract
     pytesseract.pytesseract.tesseract_cmd = _tesseract_cmd
     logger.info(f"Tesseract bulundu: {_tesseract_cmd}")
 else:
-    logger.warning("Tesseract bulunamadı. OCR işlevleri devre dışı kalabilir.")
+    logger.warning("Tesseract bulunamadı. OCR işlevleri için EasyOCR kullanılacak.")
 
 
 def ensure_data_dir():
@@ -59,6 +79,45 @@ def clean_text(text: str) -> str:
     return text.strip()
 
 
+def _ocr_image_easyocr(image_path: str) -> str:
+    reader = _get_easyocr_reader()
+    if reader is None:
+        return ""
+    try:
+        results = reader.readtext(image_path, paragraph=True, detail=0)
+        return "\n".join(results)
+    except Exception as e:
+        logger.error(f"EasyOCR hatası: {e}")
+        return ""
+
+
+def _ocr_image_tesseract(image_path: str) -> str:
+    if not _tesseract_cmd:
+        return ""
+    try:
+        image = Image.open(image_path)
+        return pytesseract.image_to_string(image, lang="tur+eng")
+    except Exception as e:
+        logger.error(f"Tesseract OCR hatası: {e}")
+        return ""
+
+
+def _ocr_image(image_path: str) -> str:
+    if OCR_BACKEND == "easyocr":
+        text = _ocr_image_easyocr(image_path)
+        if text.strip():
+            return text
+        return ""
+    if OCR_BACKEND == "tesseract":
+        return _ocr_image_tesseract(image_path)
+    if OCR_BACKEND == "auto":
+        text = _ocr_image_easyocr(image_path)
+        if text.strip():
+            return text
+        return _ocr_image_tesseract(image_path)
+    return ""
+
+
 def extract_text_from_pdf(filepath: str) -> str:
     text = ""
     try:
@@ -75,14 +134,7 @@ def extract_text_from_pdf(filepath: str) -> str:
 
 
 def extract_text_from_image(filepath: str) -> str:
-    text = ""
-    try:
-        image = Image.open(filepath)
-        text = pytesseract.image_to_string(image, lang="tur+eng")
-    except Exception as e:
-        logger.error(f"Görsel OCR hatası: {e}")
-        text = ""
-    return text
+    return clean_text(_ocr_image(filepath))
 
 
 def extract_text_from_pdf_with_ocr(filepath: str) -> str:
@@ -92,8 +144,14 @@ def extract_text_from_pdf_with_ocr(filepath: str) -> str:
     text = ""
     try:
         images = convert_from_path(filepath)
-        for image in images:
-            text += pytesseract.image_to_string(image, lang="tur+eng") + "\n"
+        for idx, image in enumerate(images):
+            tmp_path = os.path.join(DATA_DIR, f"ocr_temp_{uuid.uuid4()}_{idx}.png")
+            image.save(tmp_path)
+            text += _ocr_image(tmp_path) + "\n"
+            try:
+                os.remove(tmp_path)
+            except OSError:
+                pass
     except Exception as e:
         logger.error(f"PDF OCR hatası: {e}")
     return text
