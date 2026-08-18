@@ -8,14 +8,16 @@ Bu dosya, TUSAŞ Belge Analiz ve Soru-Cevap Sistemi'nin test sürecini, sonuçla
 
 | Bileşen | Değer |
 |---------|-------|
-| İşletim Sistemi | Windows 11 Pro |
-| Python | 3.12.4 |
-| İşlemci | Intel Core i7-10700K @ 3.80GHz (8ç/16t) |
-| RAM | 32 GB DDR4 |
-| GPU | NVIDIA GeForce RTX 3060 12GB (CUDA 11.8) |
-| Depolama | SSD 1TB |
-| Ollama | llama3.2:3b (CPU-only modda da test edildi) |
-| Tesseract | 5.3.x (Türkçe + İngilizce dil paketleri) |
+| İşletim Sistemi | Microsoft Windows 10 Home Single Language (64-bit, Build 18363) |
+| Python | 3.12.10 |
+| İşlemci | Intel Core i7-9750H @ 2.60GHz (6 çekirdek / 12 thread) |
+| RAM | 8 GB DDR4 2667 MHz (Samsung, tek modül) |
+| GPU | NVIDIA GeForce GTX 1050 3GB + Intel UHD Graphics 630 |
+| Depolama | C: 237 GB (boş: 127 GB, NTFS) |
+| PyTorch | 2.7.1+cu118 |
+| CUDA | 11.8 |
+| Ollama | 0.32.13 |
+| Tesseract | Kod tarafında otomatik tespit mekanizması aktif (Windows'ta yüklü değil) |
 
 ---
 
