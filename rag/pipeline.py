@@ -28,6 +28,7 @@ class Document:
             "chunk_count": self.chunk_count,
             "created_at": self.created_at.isoformat(),
             "metadata": self.metadata,
+            "file_hash": self.metadata.get("file_hash"),
         }
 
 

@@ -111,10 +111,13 @@ def _ocr_image(image_path: str) -> str:
     if OCR_BACKEND == "tesseract":
         return _ocr_image_tesseract(image_path)
     if OCR_BACKEND == "auto":
+        text = _ocr_image_tesseract(image_path)
+        if text.strip():
+            return text
         text = _ocr_image_easyocr(image_path)
         if text.strip():
             return text
-        return _ocr_image_tesseract(image_path)
+        return ""
     return ""
 
 

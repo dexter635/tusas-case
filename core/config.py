@@ -27,7 +27,7 @@ LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.0"))
 LLM_NUM_CTX = int(os.getenv("LLM_NUM_CTX", "2048"))
 LLM_NUM_PREDICT = int(os.getenv("LLM_NUM_PREDICT", "512"))
 
-OCR_BACKEND = os.getenv("OCR_BACKEND", "auto")
+OCR_BACKEND = os.getenv("OCR_BACKEND", "tesseract")
 OCR_GPU = os.getenv("OCR_GPU", "true").lower() == "true"
 OCR_LANGS = os.getenv("OCR_LANGS", "tr,en")
 
