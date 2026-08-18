@@ -104,7 +104,7 @@ AI destekli, yerel işlemli, kurumsal düzeyde bir **Retrieval-Augmented Generat
 
 ### Adım 1: Deposu Klonlayın
 ```bash
-git clone <repository-url>
+git clone <https://github.com/dexter635/tusas-case.git>
 cd tusas-doc-qa
 ```
 
